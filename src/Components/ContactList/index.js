@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styles from './contactList.module.scss';
 
 const ContactList = ({ contacts }) => {
   return (
-    <ul>
+    <ul className={styles.wrapper}>
       {contacts.map(({ id, name, number }) => (
-        <li key={id}>
+        <li key={id} className={styles.item}>
           {name}: {number}
         </li>
       ))}

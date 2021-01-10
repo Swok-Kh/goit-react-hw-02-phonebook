@@ -1,37 +1,54 @@
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from "uuid";
+import styles from './contactForm.module.scss';
 
-const ContactForm = ({ name, number, onChangeInput, onSubmitForm }) => {
-  const nameId = uuidv4();
-  const numberId = uuidv4();
-  return (
-    <form onSubmit={onSubmitForm}>
-      <label htmlFor={nameId}>Name</label>
-      <input
-        name="name"
-        type="text"
-        onChange={onChangeInput}
-        value={name}
-        id={nameId}
-      />
-      <label htmlFor={numberId}>Number</label>
-      <input
-        name="number"
-        type="text"
-        onChange={onChangeInput}
-        value={number}
-        id={numberId}
-      />
-      <button>Add contact</button>
-    </form>
-  );
-};
+const NAME_ID = uuidv4();
+const NUMBER_ID = uuidv4();
 
+class ContactForm extends Component {
+  state = {
+    name: "",
+    number: "",
+  };
+  handleInput = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+  onSubmitForm = (e) => {
+    e.preventDefault();
+    const { handleSubmit } = this.props;
+    handleSubmit({ name: this.state.name, number: this.state.number });
+  }
+  render() {
+
+
+    return (
+      <form onSubmit={this.onSubmitForm} className={styles.wrapper}>
+        <label htmlFor={NAME_ID} className={styles.label}>Name</label>
+        <input
+          name="name"
+          type="text"
+          onChange={this.handleInput}
+          value={this.state.name}
+          id={NAME_ID}
+          className={styles.input}
+        />
+        <label htmlFor={NUMBER_ID} className={styles.label}>Number</label>
+        <input
+          name="number"
+          type="text"
+          onChange={this.handleInput}
+          value={this.state.number}
+          id={NUMBER_ID}
+          className={styles.input}
+        />
+        <button className={styles.button}>Add contact</button>
+      </form>
+    );
+  }
+}
 ContactForm.propTypes = {
-  name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
-  onChangeInput: PropTypes.func.isRequired,
-  onSubmitForm: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired
 };
 
 export default ContactForm;

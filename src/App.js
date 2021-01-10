@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import ContactList from "./Components/ContactList";
 import ContactForm from "./Components/ContactForm";
 import Filter from "./Components/Filter";
+import styles from './app.module.scss';
 
 class App extends Component {
   state = {
@@ -13,47 +14,43 @@ class App extends Component {
       { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
     ],
     filter: "",
-    name: "",
-    number: "",
   };
   handleInput = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
-  handleSubmit = (e) => {
-    e.preventDefault();
+  handleSubmit = (obj) => {
     const id = uuidv4();
-    if (this.state.contacts.find(({ name }) => name === this.state.name)) {
-      alert(`${this.state.name} is already in contacts`);
+    if (obj.name === '') {
+      alert('Input is empty');
+      return;
+    }
+    if (this.state.contacts.find(({ name }) => name === obj.name)) {
+      alert(`${obj.name} is already in contacts`);
       return;
     }
     const contacts = [
       ...this.state.contacts,
-      { id, name: this.state.name, number: this.state.number },
+      { id, name: obj.name, number: obj.number },
     ];
     this.setState({ contacts });
   };
+  handleFiter() {
+    return this.state.filter
+      ? this.state.contacts.filter(({ name }) =>
+        name
+          .toLocaleLowerCase()
+          .includes(this.state.filter.toLocaleLowerCase())
+      )
+      : this.state.contacts
+  }
   render() {
     return (
-      <div>
-        <h1>Phonebook</h1>
-        <ContactForm
-          name={this.state.name}
-          number={this.state.number}
-          onChangeInput={this.handleInput}
-          onSubmitForm={this.handleSubmit}
-        />
-        <h2>Contacts</h2>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Phonebook</h1>
+        <ContactForm handleSubmit={this.handleSubmit} />
+        <h2 className={styles.title}>Contacts</h2>
         <Filter value={this.state.filter} onChangeInput={this.handleInput} />
-        <ContactList
-          contacts={
-            this.state.filter
-              ? this.state.contacts.filter(({ name }) =>
-                  name
-                    .toLocaleLowerCase()
-                    .includes(this.state.filter.toLocaleLowerCase())
-                )
-              : this.state.contacts
-          }
+        <ContactList contacts={this.handleFiter()}
         />
       </div>
     );

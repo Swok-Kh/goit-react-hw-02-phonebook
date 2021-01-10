@@ -1,0 +1,11 @@
+.wrapper {
+  list-style: none;
+  margin-left: 5%;
+}
+.item {
+  font-style: italic;
+  font-size: 18px;
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
