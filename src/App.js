@@ -1,24 +1,24 @@
-import React, { Component } from "react";
-import { v4 as uuidv4 } from "uuid";
-import ContactList from "./Components/ContactList";
-import ContactForm from "./Components/ContactForm";
-import Filter from "./Components/Filter";
+import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import ContactList from './Components/ContactList';
+import ContactForm from './Components/ContactForm';
+import Filter from './Components/Filter';
 import styles from './app.module.scss';
 
 class App extends Component {
   state = {
     contacts: [
-      { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
-      { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
-      { id: "id-3", name: "Eden Clements", number: "645-17-79" },
-      { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
-    filter: "",
+    filter: '',
   };
-  handleInput = (e) => {
+  handleInput = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
-  handleSubmit = (obj) => {
+  handleSubmit = obj => {
     const id = uuidv4();
     if (obj.name === '') {
       alert('Input is empty');
@@ -39,10 +39,15 @@ class App extends Component {
       ? this.state.contacts.filter(({ name }) =>
         name
           .toLocaleLowerCase()
-          .includes(this.state.filter.toLocaleLowerCase())
+          .includes(this.state.filter.toLocaleLowerCase()),
       )
-      : this.state.contacts
+      : this.state.contacts;
   }
+  onDelete = e => {
+    this.setState({
+      contacts: [...this.state.contacts].filter(({ id }) => id !== e.target.id),
+    });
+  };
   render() {
     return (
       <div className={styles.card}>
@@ -50,8 +55,7 @@ class App extends Component {
         <ContactForm handleSubmit={this.handleSubmit} />
         <h2 className={styles.title}>Contacts</h2>
         <Filter value={this.state.filter} onChangeInput={this.handleInput} />
-        <ContactList contacts={this.handleFiter()}
-        />
+        <ContactList contacts={this.handleFiter()} onDelete={this.onDelete} />
       </div>
     );
   }

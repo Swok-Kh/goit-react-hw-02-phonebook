@@ -12,21 +12,11 @@
   @extend %label;
 }
 .button {
+  @extend %button;
   width: 90%;
   margin: 0 auto;
-  background-color: $third-bgc;
-  border: 1px solid transparent;
-  color: $light-color;
-  padding: 5px;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-  transition: background-color $transition-opt;
+
   @media screen and (min-width: $tablet) {
     width: 50%;
-  }
-  &:focus,
-  &:hover {
-    background-color: $accent-colod;
   }
 }
