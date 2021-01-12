@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import ContactList from './Components/ContactList';
-import ContactForm from './Components/ContactForm';
-import Filter from './Components/Filter';
+import ContactList from './components/ContactList';
+import ContactForm from './components/ContactForm';
+import Filter from './components/Filter';
 import styles from './app.module.scss';
 
 class App extends Component {
@@ -15,37 +15,50 @@ class App extends Component {
     ],
     filter: '',
   };
-  handleInput = e => {
-    this.setState({ [e.target.name]: e.target.value });
+  handleFilterInput = e => {
+    const changed = { filter: e.target.value };
+    this.setState(prevState => {
+      const nextState = { ...prevState, ...changed };
+
+      return nextState;
+    });
   };
   handleSubmit = obj => {
-    const id = uuidv4();
+    const { contacts } = this.state;
     if (obj.name === '') {
       alert('Input is empty');
       return;
     }
-    if (this.state.contacts.find(({ name }) => name === obj.name)) {
+    if (contacts.find(({ name }) => name === obj.name)) {
       alert(`${obj.name} is already in contacts`);
       return;
     }
-    const contacts = [
-      ...this.state.contacts,
-      { id, name: obj.name, number: obj.number },
-    ];
-    this.setState({ contacts });
+
+    const newContact = { id: uuidv4(), name: obj.name, number: obj.number };
+    this.setState(prevState => {
+      const nextState = { ...prevState };
+      nextState.contacts = [...nextState.contacts, newContact];
+
+      return nextState;
+    });
   };
-  handleFiter() {
-    return this.state.filter
-      ? this.state.contacts.filter(({ name }) =>
-        name
-          .toLocaleLowerCase()
-          .includes(this.state.filter.toLocaleLowerCase()),
-      )
-      : this.state.contacts;
+  handleFilter() {
+    const { filter, contacts } = this.state;
+
+    return filter
+      ? contacts.filter(({ name }) =>
+          name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()),
+        )
+      : contacts;
   }
   onDelete = e => {
-    this.setState({
-      contacts: [...this.state.contacts].filter(({ id }) => id !== e.target.id),
+    this.setState(prevState => {
+      const nextState = { ...prevState };
+      nextState.contacts = [
+        ...nextState.contacts.filter(({ id }) => id !== e.target.id),
+      ];
+
+      return nextState;
     });
   };
   render() {
@@ -54,8 +67,11 @@ class App extends Component {
         <h1 className={styles.title}>Phonebook</h1>
         <ContactForm handleSubmit={this.handleSubmit} />
         <h2 className={styles.title}>Contacts</h2>
-        <Filter value={this.state.filter} onChangeInput={this.handleInput} />
-        <ContactList contacts={this.handleFiter()} onDelete={this.onDelete} />
+        <Filter
+          value={this.state.filter}
+          onChangeInput={this.handleFilterInput}
+        />
+        <ContactList contacts={this.handleFilter()} onDelete={this.onDelete} />
       </div>
     );
   }
