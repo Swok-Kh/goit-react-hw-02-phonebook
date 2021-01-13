@@ -16,12 +16,8 @@ class App extends Component {
     filter: '',
   };
   handleFilterInput = e => {
-    const changed = { filter: e.target.value };
-    this.setState(prevState => {
-      const nextState = { ...prevState, ...changed };
-
-      return nextState;
-    });
+    const filter = e.target.value;
+    this.setState({ filter });
   };
   handleSubmit = obj => {
     const { contacts } = this.state;
@@ -36,10 +32,7 @@ class App extends Component {
 
     const newContact = { id: uuidv4(), name: obj.name, number: obj.number };
     this.setState(prevState => {
-      const nextState = { ...prevState };
-      nextState.contacts = [...nextState.contacts, newContact];
-
-      return nextState;
+      return { contacts: [...prevState.contacts, newContact] };
     });
   };
   handleFilter() {
@@ -53,24 +46,21 @@ class App extends Component {
   }
   onDelete = e => {
     this.setState(prevState => {
-      const nextState = { ...prevState };
-      nextState.contacts = [
-        ...nextState.contacts.filter(({ id }) => id !== e.target.id),
-      ];
-
-      return nextState;
+      return {
+        contacts: [
+          ...prevState.contacts.filter(({ id }) => id !== e.target.id),
+        ],
+      };
     });
   };
   render() {
+    const { filter } = this.state;
     return (
       <div className={styles.card}>
         <h1 className={styles.title}>Phonebook</h1>
         <ContactForm handleSubmit={this.handleSubmit} />
         <h2 className={styles.title}>Contacts</h2>
-        <Filter
-          value={this.state.filter}
-          onChangeInput={this.handleFilterInput}
-        />
+        <Filter value={filter} onChangeInput={this.handleFilterInput} />
         <ContactList contacts={this.handleFilter()} onDelete={this.onDelete} />
       </div>
     );
